@@ -12,10 +12,11 @@ namespace App\Controller;
 
 
 use Faker\Factory;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 class ArticleController extends AbstractController
 {
@@ -32,9 +33,13 @@ class ArticleController extends AbstractController
     /**
      * @Route("/news/{slug}", name="single_article")
      * @param $slug
+     * @param Environment $twigEnv
      * @return Response
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
-    public function show($slug): Response
+    public function show($slug, Environment $twigEnv): Response
     {
         $commentsStub = [
             'I think that is a great to know about kielbasa.',
@@ -46,24 +51,28 @@ class ArticleController extends AbstractController
         $contentsStub = $faker->paragraphs;
         $titleStub = $faker->words(5, true);
 
-        return $this->render('show.html.twig', [
+        $html = $twigEnv->render('show.html.twig', [
                 'title' => ucwords(str_replace('-', ' ', $titleStub)),
                 'contents' => $contentsStub,
                 'comments' => $commentsStub,
                 'slug' => $slug,
             ]
         );
+
+        return new Response($html);
     }
 
     /**
      * @Route(path="/news/{slug}/likes", name="article_liker_like", methods={"POST"})
      * @param $slug
+     * @param LoggerInterface $logger
      * @return Response
      * @throws \Exception
      */
-    public function toggleLikes($slug): Response
+    public function toggleLikes($slug, LoggerInterface $logger): Response
     {
         //TODO: Like/Dislike an article.
+        $logger->info('Article is being liked.');
 
         return $this->json(['likes' => random_int(2, 99)]);
     }
