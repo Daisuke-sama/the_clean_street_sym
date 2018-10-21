@@ -19,17 +19,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleController extends AbstractController
 {
     /**
-     * @Route("/")
+     * @Route("/", name="homepage")
      *
      * @return Response
      */
     public function homepg(): Response
     {
-        return new Response('That\'s me!');
+        return $this->render('homepage.html.twig');
     }
 
     /**
-     * @Route("/news/{slug}")
+     * @Route("/news/{slug}", name="single_article")
      */
     public function show($slug): Response
     {
@@ -39,13 +39,12 @@ class ArticleController extends AbstractController
             'OK. I think we need just eat.',
         ];
 
-
         $faker = Factory::create();
         $contentsStub = $faker->paragraphs;
-
+        $titleStub = $faker->words(5, true);
 
         return $this->render('show.html.twig', [
-                'title' => ucwords(str_replace('-', ' ', $slug)),
+                'title' => ucwords(str_replace('-', ' ', $titleStub)),
                 'contents' => $contentsStub,
                 'comments' => $commentsStub,
             ]

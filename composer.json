@@ -35,7 +35,7 @@
             "App\\": "src/"
         },
         "classmap": [
-            "vendor/fzaninotto/",
+            "vendor/fzaninotto/"
         ]
     },
     "autoload-dev": {
