@@ -11,10 +11,11 @@
 namespace App\Controller;
 
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ArticleController
+class ArticleController extends AbstractController
 {
     /**
      * @Route("/")
@@ -31,7 +32,16 @@ class ArticleController
      */
     public function show($slug): Response
     {
-        return new Response(sprintf("The demonstration of a slug generation from routes annotations directly: %s",
-            $slug));
+        $commentsStub = [
+            'I think that is a great to know about kielbasa.',
+            'Drat, guys! Let it be just a wine.',
+            'OK. I think we need just eat.',
+        ];
+
+        return $this->render('show.html.twig', [
+                'title' => ucwords(str_replace('-', ' ', $slug)),
+                'comments' => $commentsStub,
+            ]
+        );
     }
 }
