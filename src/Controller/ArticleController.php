@@ -11,6 +11,7 @@
 namespace App\Controller;
 
 
+use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,8 +39,14 @@ class ArticleController extends AbstractController
             'OK. I think we need just eat.',
         ];
 
+
+        $faker = Factory::create();
+        $contentsStub = $faker->paragraphs;
+
+
         return $this->render('show.html.twig', [
                 'title' => ucwords(str_replace('-', ' ', $slug)),
+                'contents' => $contentsStub,
                 'comments' => $commentsStub,
             ]
         );

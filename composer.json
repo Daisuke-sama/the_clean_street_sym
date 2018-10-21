@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "sensio/framework-extra-bundle": "^5.2",
         "sensiolabs/security-checker": "^5.0",
+        "symfony/asset": "*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
@@ -15,6 +16,7 @@
     },
     "require-dev": {
         "easycorp/easy-log-handler": "^1.0.7",
+        "fzaninotto/faker": "^1.8",
         "symfony/debug-bundle": "^3.3|^4.0",
         "symfony/dotenv": "*",
         "symfony/monolog-bundle": "^3.0",
@@ -31,7 +33,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "classmap": [
+            "vendor/fzaninotto/",
+        ]
     },
     "autoload-dev": {
         "psr-4": {
