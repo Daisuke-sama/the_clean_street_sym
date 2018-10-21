@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,6 +31,8 @@ class ArticleController extends AbstractController
 
     /**
      * @Route("/news/{slug}", name="single_article")
+     * @param $slug
+     * @return Response
      */
     public function show($slug): Response
     {
@@ -47,7 +50,21 @@ class ArticleController extends AbstractController
                 'title' => ucwords(str_replace('-', ' ', $titleStub)),
                 'contents' => $contentsStub,
                 'comments' => $commentsStub,
+                'slug' => $slug,
             ]
         );
+    }
+
+    /**
+     * @Route(path="/news/{slug}/likes", name="article_liker_like", methods={"POST"})
+     * @param $slug
+     * @return Response
+     * @throws \Exception
+     */
+    public function toggleLikes($slug): Response
+    {
+        //TODO: Like/Dislike an article.
+
+        return $this->json(['likes' => random_int(2, 99)]);
     }
 }
