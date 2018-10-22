@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
+use Michelf\MarkdownInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class ArticleController extends AbstractController
 {
@@ -38,17 +40,28 @@ class ArticleController extends AbstractController
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show($slug, Environment $twigEnv): Response
+    public function show($slug, Environment $twigEnv, MarkdownInterface $markdown, AdapterInterface $cache): Response
     {
         $commentsStub = [
             'I think that is a great to know about kielbasa.',
             'Drat, guys! Let it be just a wine.',
             'OK. I think we need just eat.',
         ];
-
         $faker = Factory::create();
         $contentsStub = $faker->paragraphs;
+
+        $creds = "and [website](https://rpr.by/)";
+        $item = $cache->getItem('markdown_'.md5($creds));
+        if(!$item->isHit()) {
+            $item->set($markdown->transform($creds));
+            $cache->save($item);
+        }
+        $contentsStub []= $item->get();
+
+        dump($markdown);die();
+
         $titleStub = $faker->words(5, true);
 
         $html = $twigEnv->render('show.html.twig', [

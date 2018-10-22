@@ -32,7 +32,7 @@
                         <div class="col-sm-12">
                             <div class="article-text">
                                 {% for paragraph in contents %}
-                                    <p>{{ paragraph }}</p>
+                                    <p>{{ paragraph|raw }}</p>
                                 {% endfor %}
                             </div>
                         </div>
