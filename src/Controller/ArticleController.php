@@ -60,8 +60,6 @@ class ArticleController extends AbstractController
         }
         $contentsStub []= $item->get();
 
-        dump($markdown);die();
-
         $titleStub = $faker->words(5, true);
 
         $html = $twigEnv->render('show.html.twig', [
