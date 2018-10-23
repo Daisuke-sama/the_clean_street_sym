@@ -17,3 +17,9 @@ monolog:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine", "!console"]
+
+        markdown_handler_logging:
+            type: stream
+            path: '%kernel.logs_dir%/markdown.log'
+            level: debug
+            channels: ["Markdown"]

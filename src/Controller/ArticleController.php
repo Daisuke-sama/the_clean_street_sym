@@ -11,14 +11,13 @@
 namespace App\Controller;
 
 
+use App\Service\MDHelper;
 use Faker\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
-use Michelf\MarkdownInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class ArticleController extends AbstractController
 {
@@ -36,13 +35,13 @@ class ArticleController extends AbstractController
      * @Route("/news/{slug}", name="single_article")
      * @param $slug
      * @param Environment $twigEnv
+     * @param MDHelper $mdHelper
      * @return Response
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
-     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show($slug, Environment $twigEnv, MarkdownInterface $markdown, AdapterInterface $cache): Response
+    public function show($slug, Environment $twigEnv, MDHelper $mdHelper): Response
     {
         $commentsStub = [
             'I think that is a great to know about kielbasa.',
@@ -52,13 +51,9 @@ class ArticleController extends AbstractController
         $faker = Factory::create();
         $contentsStub = $faker->paragraphs;
 
-        $creds = "and [website](https://rpr.by/)";
-        $item = $cache->getItem('markdown_'.md5($creds));
-        if(!$item->isHit()) {
-            $item->set($markdown->transform($creds));
-            $cache->save($item);
-        }
-        $contentsStub []= $item->get();
+        $creds = "and [my website](https://rpr.by/)";
+
+        $contentsStub []= $mdHelper->parse($creds);
 
         $titleStub = $faker->words(5, true);
 
