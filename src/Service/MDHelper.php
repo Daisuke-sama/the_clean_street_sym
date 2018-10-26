@@ -36,11 +36,11 @@ class MDHelper
      * @param AdapterInterface $cache
      * @param LoggerInterface $logger
      */
-    public function __construct(MarkdownInterface $markdown, AdapterInterface $cache, LoggerInterface $logger)
+    public function __construct(MarkdownInterface $markdown, AdapterInterface $cache, LoggerInterface $logger, LoggerInterface $markdownLogger)
     {
         $this->markdown = $markdown;
         $this->cache = $cache;
-        $this->logger = $logger;
+        $this->logger = $markdownLogger;
     }
 
     /**

@@ -22,6 +22,16 @@ use Twig\Environment;
 class ArticleController extends AbstractController
 {
     /**
+     * @var
+     */
+    private $isDebug;
+
+    public function __construct(bool $isDebug)
+    {
+        $this->isDebug = $isDebug;
+    }
+
+    /**
      * @Route("/", name="homepage")
      *
      * @return Response
@@ -40,6 +50,7 @@ class ArticleController extends AbstractController
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function show($slug, Environment $twigEnv, MDHelper $mdHelper): Response
     {
