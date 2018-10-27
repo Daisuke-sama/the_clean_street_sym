@@ -17,6 +17,8 @@ services:
         bind:
             $markdownLogger: '@monolog.logger.Markdown'
             $isDebug: '%kernel.debug%'
+            Nexy\Slack\Client: '@nexy_slack.client'
+
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -36,3 +38,5 @@ services:
     App\Service\MDHelper:
         arguments:
             $logger: '@monolog.logger.Markdown'
+
+    Nexy\Slack\Client: '@nexy_slack.client'

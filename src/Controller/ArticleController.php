@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Service\MDHelper;
 use Faker\Factory;
+use Nexy\Slack\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,14 +47,24 @@ class ArticleController extends AbstractController
      * @param $slug
      * @param Environment $twigEnv
      * @param MDHelper $mdHelper
+     * @param Client $slack
      * @return Response
+     * @throws \Http\Client\Exception
+     * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
-     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show($slug, Environment $twigEnv, MDHelper $mdHelper): Response
+    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, Client $slack): Response
     {
+        if ($slug === 'hey') {
+            $text = $slack->createMessage()
+                ->setText('ok-ok-ok from slack')
+                ->withIcon(':ghost:')
+                ->from('Testing');
+            $slack->sendMessage($text);
+        }
+
         $commentsStub = [
             'I think that is a great to know about kielbasa.',
             'Drat, guys! Let it be just a wine.',
