@@ -13,7 +13,6 @@ namespace App\Controller;
 
 use App\Service\MDHelper;
 use Faker\Factory;
-use Nexy\Slack\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,22 +46,19 @@ class ArticleController extends AbstractController
      * @param $slug
      * @param Environment $twigEnv
      * @param MDHelper $mdHelper
-     * @param Client $slack
+     * @param SlackClient $slack
      * @return Response
-     * @throws \Http\Client\Exception
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, Client $slack): Response
+    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, SlackClient $slack): Response
     {
+        $faker = Factory::create();
+
         if ($slug === 'hey') {
-            $text = $slack->createMessage()
-                ->setText('ok-ok-ok from slack')
-                ->withIcon(':ghost:')
-                ->from('Testing');
-            $slack->sendMessage($text);
+            $slack->sendMsg($faker->text, 'ArCon');
         }
 
         $commentsStub = [
@@ -70,7 +66,7 @@ class ArticleController extends AbstractController
             'Drat, guys! Let it be just a wine.',
             'OK. I think we need just eat.',
         ];
-        $faker = Factory::create();
+
         $contentsStub = $faker->paragraphs;
 
         $creds = "and [my website](https://rpr.by/)";
@@ -99,7 +95,6 @@ class ArticleController extends AbstractController
      */
     public function toggleLikes($slug, LoggerInterface $logger): Response
     {
-        //TODO: Like/Dislike an article.
         $logger->info('Article is being liked.');
 
         return $this->json(['likes' => random_int(2, 99)]);
