@@ -13,17 +13,23 @@
                     <div class="row">
                         <div class="col-sm-12">
 
-                            <img class="show-article-img" src="{{ asset('images/asteroid.jpeg') }}">
+                            <img class="show-article-img" src="{{ asset(article.imagePath) }}">
                             <div class="show-article-title-container d-inline-block pl-3 align-middle">
                                 <span class="show-article-title ">{{ article.title }}</span>
                                 <br>
 
-                                <span class="align-left article-details"><img class="article-author-img rounded-circle"
-                                                                              src="{{ asset('images/alien-profile.png') }}"> I am </span>
+                                <span class="align-left article-details">
+                                    <img class="article-author-img rounded-circle"
+                                         src="{{ asset('images/alien-profile.png') }}">
+                                    {{ article.author }}
+                                </span>
                                 <span class="pl-2 article-details">{{ article.publishedAt ? article.publishedAt|ago : 'unpublished' }}</span>
                                 <span class="pl-2 article-details">
-                                    <span class="article-like-count">5</span>
-                                    <a href="{{ path('article_liker_like', {slug: article.slug}) }}" class="fa fa-heart-o like-article article-like-button"></a>
+                                    <span class="article-like-count">
+                                        {{ article.likeCount }}
+                                    </span>
+                                    <a href="{{ path('article_liker_like', {slug: article.slug}) }}"
+                                       class="fa fa-heart-o like-article article-like-button"></a>
                                 </span>
                             </div>
                         </div>

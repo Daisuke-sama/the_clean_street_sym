@@ -21,6 +21,9 @@ class ArticleAdminController extends AbstractController
         $title = 'Sit Totam Debitis Esse Aut';
         $article->setTitle($title)
             ->setSlug(strtolower(str_replace(' ', '-', $title)) . rand(123, 912))
+            ->setAuthor('Daisuke-king')
+            ->setLikeCount(rand(10, 101))
+            ->setImageFilename('asteroid.jpg')
             ->setContent(<<<EOF
             and [my website](https://rpr.by/)
 Quas dicta odit optio cumque. Sit et aliquid repellendus libero. Molestiae iure ullam aut omnis. Magni nisi autem ipsam est.
@@ -33,6 +36,7 @@ EOF
         if (rand(2, 10) > 2) {
             $article->setPublishedAt(new \DateTime(sprintf('-%d days', rand(1, 99))));
         }
+
 
         $manager->persist($article);
         $manager->flush();
