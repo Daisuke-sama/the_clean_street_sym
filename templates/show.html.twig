@@ -20,7 +20,7 @@
 
                                 <span class="align-left article-details"><img class="article-author-img rounded-circle"
                                                                               src="{{ asset('images/alien-profile.png') }}"> I am </span>
-                                <span class="pl-2 article-details"> 3 hours ago</span>
+                                <span class="pl-2 article-details">{{ article.publishedAt ? article.publishedAt|ago : 'unpublished' }}</span>
                                 <span class="pl-2 article-details">
                                     <span class="article-like-count">5</span>
                                     <a href="{{ path('article_liker_like', {slug: article.slug}) }}" class="fa fa-heart-o like-article article-like-button"></a>

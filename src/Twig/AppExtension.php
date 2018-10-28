@@ -4,26 +4,22 @@ namespace App\Twig;
 
 use App\Service\MDHelper;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use Twig\TwigFunction;
 
-class AppExtension extends AbstractExtension
+class AppExtension extends AbstractExtension implements ServiceSubscriberInterface
 {
     /**
-     * @var MDHelper
+     * @var ContainerInterface
      */
-    private $mdHelper;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private $container;
 
-    public function __construct(MDHelper $mdHelper, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container)
     {
-        $this->mdHelper = $mdHelper;
-        $this->logger = $logger;
+        $this->container = $container;
     }
 
     public function getFilters(): array
@@ -39,9 +35,36 @@ class AppExtension extends AbstractExtension
     public function processMarkdown($value)
     {
         try {
-            return $this->mdHelper->parse($value);
+            return $this->container->get(MDHelper::class)
+                ->parse($value);
         } catch (InvalidArgumentException $e) {
-            $this->logger->critical($e->getMessage());
+            $this->container->get(LoggerInterface::class)->critical($e->getMessage());
         }
+    }
+
+    /**
+     * Returns an array of service types required by such instances, optionally keyed by the service names used internally.
+     *
+     * For mandatory dependencies:
+     *
+     *  * array('logger' => 'Psr\Log\LoggerInterface') means the objects use the "logger" name
+     *    internally to fetch a service which must implement Psr\Log\LoggerInterface.
+     *  * array('Psr\Log\LoggerInterface') is a shortcut for
+     *  * array('Psr\Log\LoggerInterface' => 'Psr\Log\LoggerInterface')
+     *
+     * otherwise:
+     *
+     *  * array('logger' => '?Psr\Log\LoggerInterface') denotes an optional dependency
+     *  * array('?Psr\Log\LoggerInterface') is a shortcut for
+     *  * array('Psr\Log\LoggerInterface' => '?Psr\Log\LoggerInterface')
+     *
+     * @return array The required service types, optionally keyed by service names
+     */
+    public static function getSubscribedServices()
+    {
+        return [
+            MDHelper::class,
+            LoggerInterface::class
+        ];
     }
 }
