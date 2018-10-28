@@ -12,7 +12,6 @@ namespace App\Controller;
 
 
 use App\Entity\Article;
-use App\Service\MDHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Psr\Log\LoggerInterface;
@@ -38,28 +37,30 @@ class ArticleController extends AbstractController
      *
      * @return Response
      */
-    public function homepg(): Response
+    public function homepg(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('homepage.html.twig');
+        $repo = $entityManager->getRepository('App:Article');
+        $articles = $repo->findAllPublishedOrderedByNewest();
+
+        return $this->render('homepage.html.twig', [
+            'articles' => $articles
+        ]);
     }
 
     /**
      * @Route("/news/{slug}", name="single_article")
-     * @param $slug
+     * @param Article $article
      * @param Environment $twigEnv
-     * @param MDHelper $mdHelper
      * @param SlackClient $slack
      * @return Response
-     * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, SlackClient $slack, EntityManagerInterface $em): Response
+    public function show(Article $article, Environment $twigEnv, SlackClient $slack): Response
     {
-        $faker = Factory::create();
-
-        if ($slug === 'hey') {
+        if ($article->getSlug() === 'hey') {
+            $faker = Factory::create();
             $slack->sendMsg($faker->text, 'ArCon');
         }
 
@@ -68,14 +69,6 @@ class ArticleController extends AbstractController
             'Drat, guys! Let it be just a wine.',
             'OK. I think we need just eat.',
         ];
-
-        $repo = $em->getRepository(Article::class);
-        $article = $repo->findOneBy(['slug' => $slug]);
-
-        if (!$article) {
-            throw $this->createNotFoundException(sprintf('There is no article with the slug "%s" in the database.', $slug));
-        }
-
 
         $html = $twigEnv->render('show.html.twig', [
                 'article' => $article,
