@@ -81,15 +81,18 @@ class ArticleController extends AbstractController
 
     /**
      * @Route(path="/news/{slug}/likes", name="article_liker_like", methods={"POST"})
-     * @param $slug
+     * @param Article $article
      * @param LoggerInterface $logger
      * @return Response
      * @throws \Exception
      */
-    public function toggleLikes($slug, LoggerInterface $logger): Response
+    public function toggleLikes(Article $article, LoggerInterface $logger, EntityManagerInterface $em): Response
     {
+        $article->incrementLikes();
+        $em->flush();
+
         $logger->info('Article is being liked.');
 
-        return $this->json(['likes' => random_int(2, 99)]);
+        return $this->json(['likes' => $article->getLikeCount()]);
     }
 }

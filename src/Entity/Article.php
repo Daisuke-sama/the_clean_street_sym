@@ -144,4 +144,11 @@ class Article
     {
         return 'images/'.$this->getImageFilename();
     }
+
+    public function incrementLikes(): self
+    {
+        $this->likeCount = ++$this->likeCount;
+
+        return $this;
+    }
 }
