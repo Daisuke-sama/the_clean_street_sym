@@ -49,8 +49,8 @@ class ArticleController extends AbstractController
      * @param Environment $twigEnv
      * @param MDHelper $mdHelper
      * @param SlackClient $slack
-     * @param EntityManagerInterface $em
      * @return Response
+     * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
