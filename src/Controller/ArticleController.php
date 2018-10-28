@@ -11,7 +11,9 @@
 namespace App\Controller;
 
 
+use App\Entity\Article;
 use App\Service\MDHelper;
+use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,13 +49,13 @@ class ArticleController extends AbstractController
      * @param Environment $twigEnv
      * @param MDHelper $mdHelper
      * @param SlackClient $slack
+     * @param EntityManagerInterface $em
      * @return Response
-     * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, SlackClient $slack): Response
+    public function show($slug, Environment $twigEnv, MDHelper $mdHelper, SlackClient $slack, EntityManagerInterface $em): Response
     {
         $faker = Factory::create();
 
@@ -67,19 +69,17 @@ class ArticleController extends AbstractController
             'OK. I think we need just eat.',
         ];
 
-        $contentsStub = $faker->paragraphs;
+        $repo = $em->getRepository(Article::class);
+        $article = $repo->findOneBy(['slug' => $slug]);
 
-        $creds = "and [my website](https://rpr.by/)";
+        if (!$article) {
+            throw $this->createNotFoundException(sprintf('There is no article with the slug "%s" in the database.', $slug));
+        }
 
-        $contentsStub []= $mdHelper->parse($creds);
-
-        $titleStub = $faker->words(5, true);
 
         $html = $twigEnv->render('show.html.twig', [
-                'title' => ucwords(str_replace('-', ' ', $titleStub)),
-                'contents' => $contentsStub,
-                'comments' => $commentsStub,
-                'slug' => $slug,
+                'article' => $article,
+                'comments' => $commentsStub
             ]
         );
 
