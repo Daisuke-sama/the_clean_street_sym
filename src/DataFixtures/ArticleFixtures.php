@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class ArticleFixtures extends BaseFixture
 {
     private static $articleImages = [
-        'asteroid.jpeg',
+        'asteroid.jpg',
         'mercury.jpeg',
         'lightspeed.png',
     ];
@@ -24,7 +24,6 @@ class ArticleFixtures extends BaseFixture
                 ->setTitle(
                     $this->faker->words($this->faker->numberBetween(2, 5), true)
                 )
-                ->setSlug($this->faker->slug)
                 ->setAuthor($this->faker->firstName . ' ' . $this->faker->lastName)
                 ->setLikeCount(
                     $this->faker->numberBetween(1, 100)
