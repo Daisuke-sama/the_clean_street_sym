@@ -17,6 +17,8 @@ class ArticleAdminController extends AbstractController
      */
     public function new(EntityManagerInterface $manager)
     {
+        die('todo');
+
         $article = new Article();
         $title = 'Sit Totam Debitis Esse Aut';
         $article->setTitle($title)
