@@ -12,6 +12,7 @@ namespace App\Controller;
 
 
 use App\Entity\Article;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Psr\Log\LoggerInterface;
@@ -57,22 +58,15 @@ class ArticleController extends AbstractController
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function show(Article $article, Environment $twigEnv, SlackClient $slack): Response
+    public function show(Article $article, Environment $twigEnv, SlackClient $slack, CommentRepository $commentRepository): Response
     {
         if ($article->getSlug() === 'hey') {
             $faker = Factory::create();
             $slack->sendMsg($faker->text, 'ArCon');
         }
 
-        $commentsStub = [
-            'I think that is a great to know about kielbasa.',
-            'Drat, guys! Let it be just a wine.',
-            'OK. I think we need just eat.',
-        ];
-
         $html = $twigEnv->render('show.html.twig', [
                 'article' => $article,
-                'comments' => $commentsStub
             ]
         );
 
