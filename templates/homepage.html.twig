@@ -37,6 +37,8 @@
                                     {{ article.author }}
                                 </span>
 
+                                <small>({{ article.comments|length }} comments)</small>
+
                                 <span class="pl-5 article-details float-right">
                                     {{ article.publishedAt ? article.publishedAt|ago : 'unpublished' }}
                                 </span>
