@@ -2,16 +2,36 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Entity\Article;
+use App\Entity\Comment;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class CommentFixture extends Fixture
+class CommentFixture extends BaseFixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function loadData(ObjectManager $manager)
     {
-        // $product = new Product();
-        // $manager->persist($product);
+        $this->createMany(Comment::class, 100, function (Comment $comment) {
+            $comment->setContent(
+                $this->faker->sentences(2, true)
+            );
+            $comment->setAuthorName($this->faker->name);
+            $comment->setCreatedAt($this->faker->dateTimeBetween('-1 month', '-1 second'));
+
+            $comment->setArticle($this->getRandomReference(Article::class));
+        });
 
         $manager->flush();
+    }
+
+    /**
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [ArticleFixtures::class];
     }
 }
