@@ -30,6 +30,8 @@ class ArticleRepository extends ServiceEntityRepository
             ->addCriteria(CommentRepository::createNonDeletedCriteria());
 
         return $this->addIsPublishedQueryBuilder()
+            ->leftJoin('a.tags', 't')
+            ->addSelect('t')
             ->orderBy('a.publishedAt', 'DESC')
             ->getQuery()
             ->getResult();

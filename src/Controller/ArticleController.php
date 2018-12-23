@@ -36,7 +36,9 @@ class ArticleController extends AbstractController
     /**
      * @Route("/", name="homepage")
      *
+     * @param EntityManagerInterface $entityManager
      * @return Response
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function homepg(EntityManagerInterface $entityManager): Response
     {

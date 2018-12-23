@@ -59,7 +59,8 @@ abstract class BaseFixture extends Fixture
      * @return object
      * @throws \Exception
      */
-    protected function getRandomReference(string $className) {
+    protected function getRandomReference(string $className)
+    {
         if (!isset($this->referenceIndex[$className])) {
             $this->referenceIndex[$className] = [];
 
@@ -77,6 +78,23 @@ abstract class BaseFixture extends Fixture
         $randomRefKey = $this->faker->randomElement($this->referenceIndex[$className]);
 
         return $this->getReference($randomRefKey);
+    }
+
+    /**
+     * @param string $className
+     * @param int $count
+     * @return array
+     * @throws \Exception
+     */
+    protected function getRandomReferences(string $className, int $count)
+    {
+        $references = [];
+
+        while (count($references) < $count) {
+            $references[] = $this->getRandomReference($className);
+        }
+
+        return $references;
     }
 
     abstract protected function loadData(ObjectManager $manager);
