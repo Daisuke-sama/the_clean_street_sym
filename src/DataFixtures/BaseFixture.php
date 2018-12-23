@@ -40,58 +40,61 @@ abstract class BaseFixture extends Fixture
         $this->loadData($manager);
     }
 
-    public function createMany(string $className, int $count, callable $factory)
+    public function createMany(int $count, string $groupName, callable $factory)
     {
         for ($i = 0; $i < $count; $i++) {
-            $item = new $className();
-            $factory($item, $i);
+            $entity = $factory($i);
 
-            $this->manager->persist($item);
+            if (null === $entity) {
+                throw new \LogicException('Did you forget to return the entity object from your callback to BaseFixture::createMany()?');
+            }
+
+            $this->manager->persist($entity);
             // store for usage later as App\Entity\ClassName_#COUNT#
-            $this->addReference($className . '_' . $i, $item);
+            $this->addReference(sprintf('%s_%d', $groupName, $i), $entity);
         }
     }
 
     /**
      * Returns a name or reference to an Object Element created within the loading fixtures.
      *
-     * @param string $className
+     * @param string $referenceName
      * @return object
      * @throws \Exception
      */
-    protected function getRandomReference(string $className)
+    protected function getRandomReference(string $referenceName)
     {
-        if (!isset($this->referenceIndex[$className])) {
-            $this->referenceIndex[$className] = [];
+        if (!isset($this->referenceIndex[$referenceName])) {
+            $this->referenceIndex[$referenceName] = [];
 
             foreach ($this->referenceRepository->getReferences() as $key => $ref) {
-                if (strpos($key, $className . '_') === 0) {
-                    $this->referenceIndex[$className][] = $key;
+                if (strpos($key, $referenceName . '_') === 0) {
+                    $this->referenceIndex[$referenceName][] = $key;
                 }
             }
         }
 
-        if (empty($this->referenceIndex[$className])) {
-            throw new \Exception(sprintf('Can\'t find and references for class %s', $className));
+        if (empty($this->referenceIndex[$referenceName])) {
+            throw new \Exception(sprintf('Can\'t find and references for class %s', $referenceName));
         }
 
-        $randomRefKey = $this->faker->randomElement($this->referenceIndex[$className]);
+        $randomRefKey = $this->faker->randomElement($this->referenceIndex[$referenceName]);
 
         return $this->getReference($randomRefKey);
     }
 
     /**
-     * @param string $className
+     * @param string $referenceName
      * @param int $count
      * @return array
      * @throws \Exception
      */
-    protected function getRandomReferences(string $className, int $count)
+    protected function getRandomReferences(string $referenceName, int $count)
     {
         $references = [];
 
         while (count($references) < $count) {
-            $references[] = $this->getRandomReference($className);
+            $references[] = $this->getRandomReference($referenceName);
         }
 
         return $references;

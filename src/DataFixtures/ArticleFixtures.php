@@ -21,7 +21,10 @@ class ArticleFixtures extends BaseFixture implements DependentFixtureInterface
 
     protected function loadData(ObjectManager $manager)
     {
-        $this->createMany(Article::class, 30, function (Article $article, int $number) use ($manager) {
+
+        $this->createMany(30, Article::class, function ($i) use ($manager) {
+            $article = new Article();
+
             $article
                 ->setTitle(
                     $this->faker->words($this->faker->numberBetween(2, 5), true)
@@ -47,6 +50,8 @@ class ArticleFixtures extends BaseFixture implements DependentFixtureInterface
             if ($this->faker->boolean(70)) {
                 $article->setPublishedAt($this->faker->dateTimeBetween('-50 days', '-1 days'));
             }
+
+            return $article;
         });
 
         $manager->flush();
