@@ -10,6 +10,8 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/login", name="app_login")
+     * @param AuthenticationUtils $authUtils
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(AuthenticationUtils $authUtils)
     {
@@ -20,5 +22,12 @@ class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'err' => $err,
         ]);
+    }
+
+    /**
+     * @Route("/logout", name="app_logout")
+     */
+    public function logout() {
+
     }
 }
