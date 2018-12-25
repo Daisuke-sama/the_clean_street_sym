@@ -51,7 +51,7 @@ EOF
     }
 
     /**
-     * @Route("/article/admin", name="article_admin")
+     * @Route("/admin/article", name="article_admin")
      */
     public function index()
     {
