@@ -11,9 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleAdminController extends AbstractController
 {
     /**
-     * @Route(path="/admin/article/new")
+     * @Route(path="/admin/article/new", name="article_admin_new")
      * @param EntityManagerInterface $manager
      * @return Response
+     * @throws \Exception
      */
     public function new(EntityManagerInterface $manager)
     {
