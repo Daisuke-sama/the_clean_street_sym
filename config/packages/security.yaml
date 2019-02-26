@@ -37,3 +37,11 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+
+        # definitely allow /login to be accessible anonymously
+        # - { path: ^/login, roles: IS_AUTHENTICATED_ANONIMOUSLY }
+        # ...Fully means that you have authenticated during this session.
+        # - { path: ^/change-password, roles: IS_AUTHENTICATED_FULLY }
+        # if you wanted to force EVERY URL to be protected
+        # - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
+
