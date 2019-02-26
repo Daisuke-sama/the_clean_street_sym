@@ -14,6 +14,7 @@ namespace App\Service;
 use Michelf\MarkdownInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Security\Core\Security;
 
 class MDHelper
 {
@@ -33,6 +34,10 @@ class MDHelper
      * @var bool
      */
     private $isDebug;
+    /**
+     * @var Security
+     */
+    private $security;
 
     /**
      * MDHelper constructor.
@@ -41,13 +46,15 @@ class MDHelper
      * @param LoggerInterface $logger
      * @param LoggerInterface $markdownLogger
      * @param bool $isDebug
+     * @param Security $security
      */
-    public function __construct(MarkdownInterface $markdown, AdapterInterface $cache, LoggerInterface $logger, LoggerInterface $markdownLogger, bool $isDebug)
+    public function __construct(MarkdownInterface $markdown, AdapterInterface $cache, LoggerInterface $logger, LoggerInterface $markdownLogger, bool $isDebug, Security $security)
     {
         $this->markdown = $markdown;
         $this->cache = $cache;
         $this->logger = $markdownLogger;
         $this->isDebug = $isDebug;
+        $this->security = $security;
     }
 
     /**
@@ -57,6 +64,12 @@ class MDHelper
      */
     public function parse(string $source): string
     {
+        if (stripos($source, 'ab') !== false) {
+            $this->logger->info('They are talking again!', [
+                'user' => $this->security->getUser(),
+            ]);
+        }
+
         if ($this->isDebug) {
             return $this->markdown->transform($source);
         }

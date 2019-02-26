@@ -35,8 +35,7 @@ class AppExtension extends AbstractExtension implements ServiceSubscriberInterfa
     public function processMarkdown($value)
     {
         try {
-            return $this->container->get(MDHelper::class)
-                ->parse($value);
+            return $this->container->get(MDHelper::class)->parse($value);
         } catch (InvalidArgumentException $e) {
             $this->container->get(LoggerInterface::class)->critical($e->getMessage());
         }
