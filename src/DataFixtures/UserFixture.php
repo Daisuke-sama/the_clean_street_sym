@@ -28,6 +28,10 @@ class UserFixture extends BaseFixture
             $password = $this->passwordEncoder->encodePassword($user, 'noadmin');
             $user->setPassword($password);
 
+            if ($this->faker->boolean) {
+                $user->setTwitterUsername($this->faker->userName);
+            }
+
             return $user;
         });
 
