@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class ArticleAdminController
  * @package App\Controller
  *
- * @IsGranted("ROLE_ADMIN")
+ * @IsGranted("ROLE_ADMIN_ARTICLE")
  */
 class ArticleAdminController extends AbstractController
 {
