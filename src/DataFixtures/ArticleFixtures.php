@@ -29,7 +29,9 @@ class ArticleFixtures extends BaseFixture implements DependentFixtureInterface
                 ->setTitle(
                     $this->faker->words($this->faker->numberBetween(2, 5), true)
                 )
-                ->setAuthor($this->genName())
+                ->setAuthor(
+                    $this->getRandomReference('main_users')
+                )
                 ->setLikeCount(
                     $this->faker->numberBetween(1, 100)
                 )
@@ -57,19 +59,14 @@ class ArticleFixtures extends BaseFixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    private function genName()
-    {
-        return $this->faker->firstName . ' ' . $this->faker->lastName;
-    }
-
     /**
      * This method must return an array of fixtures classes
-     * on which the implementing class depends on
+     * on which the implementing class depends on.
      *
      * @return array
      */
     public function getDependencies()
     {
-        return [TagFixture::class];
+        return [TagFixture::class, UserFixture::class];
     }
 }
