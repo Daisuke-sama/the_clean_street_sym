@@ -12,8 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class ArticleAdminController
  * @package App\Controller
- *
- * @IsGranted("ROLE_ADMIN_ARTICLE")
  */
 class ArticleAdminController extends AbstractController
 {
@@ -22,6 +20,8 @@ class ArticleAdminController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      * @throws \Exception
+     *
+     * @IsGranted("ROLE_ADMIN_ARTICLE")
      */
     public function new(EntityManagerInterface $manager)
     {
@@ -56,6 +56,19 @@ EOF
                 $article->getId(),
                 $article->getSlug())
         );
+    }
+
+    /**
+     * @Route("/admin/article/{id}/edit", name="article_admin_edit")
+     * @param Article $article
+     */
+    public function edit(Article $article)
+    {
+        if ($article->getAuthor() != $this->getUser() && !$this->isGranted('ROLE_ADMIN_ARTICLE')) {
+            throw $this->createAccessDeniedException('No access!');
+        }
+
+        dd($article);
     }
 
     /**
