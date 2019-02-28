@@ -1,5 +1,7 @@
 {
   "namespaces": [
-    { "path":  "templates" }
+    { "path":  "templates" },
+    { "path":  "twig-bundle/Resources/views" },
+    { "path":  "security-bundle/Resources/views" }
   ]
 }
