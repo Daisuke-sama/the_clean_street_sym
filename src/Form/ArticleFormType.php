@@ -47,6 +47,7 @@ class ArticleFormType extends AbstractType
                 },
                 'placeholder' => 'Set an author',
                 'choices' => $this->userRepository->findAllEmailAlphabetical(),
+                'invalid_message' => 'Invalid data type has been pushed.'
             ]);
     }
 
