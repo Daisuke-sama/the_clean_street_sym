@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -26,6 +28,7 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Title must be field and interesting, of course.")
      */
     private $title;
 
@@ -249,5 +252,19 @@ class Article
     public function isPublished(): bool
     {
         return $this->publishedAt !== null || $this->publishedAt <= new \DateTime();
+    }
+
+    /**
+     * @Assert\Callback()
+     * @param ExecutionContextInterface $context
+     * @param $payload
+     */
+    public function validate(ExecutionContextInterface $context, $payload): void
+    {
+        if (stripos($this->getTitle(), 'something') !== false) {
+            $context->buildViolation("You've missed something in the title.")
+                ->atPath('title')
+                ->addViolation();
+        }
     }
 }
