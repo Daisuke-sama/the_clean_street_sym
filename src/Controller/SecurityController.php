@@ -60,6 +60,10 @@ class SecurityController extends AbstractController
             /** @var User $user */
             $user = $form->getData();
 
+            if (true === $form['agreeTerms']->getData()) {
+                $user->agreeToTerms();
+            }
+
             $user->setPassword($passwordEncoder->encodePassword(
                 $user,
                 $form['plainPassword']->getData()
