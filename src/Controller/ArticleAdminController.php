@@ -37,7 +37,7 @@ class ArticleAdminController extends AbstractController
             $em->persist($art);
             $em->flush();
 
-            $this->addFlash('success', "Article has been created.");
+            $this->addFlash('success', 'Article has been created.');
 
             return $this->redirectToRoute('article_admin_list');
         }
@@ -49,17 +49,33 @@ class ArticleAdminController extends AbstractController
 
     /**
      * @Route("/admin/article/{id}/edit", name="article_admin_edit")
+     * @param EntityManagerInterface $em
+     * @param Request $request
      * @param Article $article
      *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @IsGranted("MANAGE", subject="article")
      */
-    public function edit(Article $article)
+    public function edit(EntityManagerInterface $em, Request $request, Article $article)
     {
-        // or use this instead of annotation
-        //$this->denyAccessUnlessGranted('MANAGE', $article);
+        $form = $this->createForm(ArticleFormType::class, $article);
 
-        dd($article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
 
+            $em->persist($article);
+            $em->flush();
+
+            $this->addFlash('success', 'Article has been updated.');
+
+            return $this->redirectToRoute('article_admin_edit', [
+                'id' => $article->getId(),
+            ]);
+        }
+
+        return $this->render('article_admin/new.html.twig', [
+            'articleForm' => $form->createView(),
+        ]);
     }
 
     /**
