@@ -40,14 +40,8 @@ class ArticleFormType extends AbstractType
             ->add('publishedAt', null, [
                 'widget' => 'single_text',
             ])
-            ->add('author', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => function(User $user) {
-                    return sprintf('(%d) %s', $user->getId(), $user->getEmail());
-                },
-                'placeholder' => 'Set an author',
-                'choices' => $this->userRepository->findAllEmailAlphabetical(),
-                'invalid_message' => 'Invalid data type has been pushed.'
+            ->add('author', UserSelectTextType::class, [
+                'invalid_message' => 'User doesn\'t exist.',
             ]);
     }
 
