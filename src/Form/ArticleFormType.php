@@ -89,6 +89,21 @@ class ArticleFormType extends AbstractType
                 );
             }
         );
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                /** @var Article|null $data */
+                $data = $event->getData();
+                if (!$data) {
+                    return;
+                }
+                $this->setupSpecificLocationNameField(
+                    $event->getForm(),          // now we are working with the top level form, i.e. entire form
+                    $data->getLocation()        // so, we need to ask for the specific field against its data
+                );
+            }
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
