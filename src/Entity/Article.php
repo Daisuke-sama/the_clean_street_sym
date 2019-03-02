@@ -76,6 +76,16 @@ class Article
      */
     private $author;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $location;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $SpecificLocationName;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -267,5 +277,29 @@ class Article
                 ->atPath('title')
                 ->addViolation();
         }
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getSpecificLocationName(): ?string
+    {
+        return $this->SpecificLocationName;
+    }
+
+    public function setSpecificLocationName(?string $SpecificLocationName): self
+    {
+        $this->SpecificLocationName = $SpecificLocationName;
+
+        return $this;
     }
 }
