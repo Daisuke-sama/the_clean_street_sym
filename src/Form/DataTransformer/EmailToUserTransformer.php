@@ -17,14 +17,20 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class EmailToUserTransformer implements DataTransformerInterface
 {
     private $userRepository;
+    /**
+     * @var callable
+     */
+    private $finderCallback;
 
     /**
      * UserSelectTextType constructor.
      * @param UserRepository $userRepository
+     * @param callable $finderCallback
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, callable $finderCallback)
     {
         $this->userRepository = $userRepository;
+        $this->finderCallback = $finderCallback;
     }
 
     /**
@@ -93,11 +99,14 @@ class EmailToUserTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        $user = $this->userRepository->findOneBy(['email' => $value]);
+        $callback = $this->finderCallback;
+
+        $user = $callback($this->userRepository, $value);
 
         if (!$user) {
             throw new TransformationFailedException(sprintf('No user found with email "%s"', $value));
         }
+
 
         return $user;
     }
