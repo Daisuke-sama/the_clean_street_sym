@@ -8,6 +8,7 @@ use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class ArticleAdminController
  * @package App\Controller
  */
-class ArticleAdminController extends AbstractController
+class ArticleAdminController extends BaseController
 {
     private const ARTICLE_FORM_VAR_IN_TWIG = 'articleForm';
 
@@ -95,12 +96,18 @@ class ArticleAdminController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
+     *
      * @Route(path="/admin/article/location-select", name="admin_article_location_select")
      * @param Request $request
      * @return Response
      */
     public function getSpecificLocationSelectGroup(Request $request)
     {
+        if (!$this->isGranted('ROLE_ADMIN_ARTICLE') && $this->getUser()->getArticles()->isEmpty()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $article = new Article();
         $article->setLocation($request->query->get('location'));
 
