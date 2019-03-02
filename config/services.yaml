@@ -41,3 +41,10 @@ services:
             $logger: '@monolog.logger.Markdown'
 
     Nexy\Slack\Client: '@nexy_slack.client'
+
+    # Use only before Symfony 4.2. Next versions will do tagging of form type
+    # extensions automatically.
+    App\Form\TypeExtension\TextareaTypeExtension:
+        tags:
+            - { name: form.type_extension,
+                extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType }
