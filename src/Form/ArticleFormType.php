@@ -12,11 +12,15 @@ namespace App\Form;
 use App\Entity\Article;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use function Clue\StreamFilter\fun;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticleFormType extends AbstractType
@@ -73,6 +77,18 @@ class ArticleFormType extends AbstractType
                     'widget' => 'single_text',
                 ]);
         }
+
+        $builder->get('location')->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                // The $form variable is the Form object that represents just the location field.
+                $form = $event->getForm();
+                $this->setupSpecificLocationNameField(
+                    $form->getParent(),
+                    $form->getData()        // A value of the $form, which is only 'location' field in this case because of ->get('location')
+                );
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -113,5 +129,22 @@ class ArticleFormType extends AbstractType
         ];
 
         return $locationNameChoices[$location];
+    }
+
+    private function setupSpecificLocationNameField(FormInterface $form, ?string $location)
+    {
+        $choices = $this->getLocationNameChoices($location);
+
+        if (null === $choices) {
+            $form->remove('specificLocationName');
+
+            return;
+        }
+
+        $form->add('specificLocationName', ChoiceType::class, [
+            'placeholder' => 'Where exactly?',
+            'choices' => $choices,
+            'required' => false,
+        ]);
     }
 }
