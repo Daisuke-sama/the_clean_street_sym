@@ -33,6 +33,7 @@ class ArticleFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Article|null $article */
         $article = $options['data'] ?? null;
         $isEdit = $article && $article->getId();
 
@@ -54,15 +55,17 @@ class ArticleFormType extends AbstractType
                     'Near a closet' => 'closet',
                     'Private Space' => 'private_space'
                 ],
-            ])
-            ->add('specificLocationName', ChoiceType::class, [
-                'placeholder' => 'Where exactly?',
-                'choices' => [
-                    'TODO' => 'TODO'
-                ],
-                'required' => false,
-            ])
-        ;
+            ]);
+
+        $location = $article ? $article->getLocation() : null;
+        if ($location) {
+            $builder
+                ->add('specificLocationName', ChoiceType::class, [
+                    'placeholder' => 'Where exactly?',
+                    'choices' => $this->getLocationNameChoices($location),
+                    'required' => false,
+                ]);
+        }
 
         if ($options['include_published_at']) {
             $builder
@@ -78,5 +81,37 @@ class ArticleFormType extends AbstractType
             'data_class' => Article::class,
             'include_published_at' => false,
         ]);
+    }
+
+    private function getLocationNameChoices(string $location)
+    {
+        $cities = [
+            'NY',
+            'LA',
+            'PD',
+            'CH',
+            'MB',
+            'BS',
+            'TC',
+            'DC',
+        ];
+
+        $closet = [
+            'Polaris',
+            'Sirius',
+            'Alpha A',
+            'Alpha B',
+            'Betelgeuse',
+            'Rigel',
+            'Other'
+        ];
+
+        $locationNameChoices = [
+            'urban_system' => array_combine($cities, $cities),
+            'closet' => array_combine($closet, $closet),
+            'private_space' => null,
+        ];
+
+        return $locationNameChoices[$location];
     }
 }
