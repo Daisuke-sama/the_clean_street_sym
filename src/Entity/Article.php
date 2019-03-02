@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Form\ArticleFormType;
 use App\Repository\CommentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -287,6 +288,10 @@ class Article
     public function setLocation(?string $location): self
     {
         $this->location = $location;
+
+        if (!$this->location || $this->location === ArticleFormType::PRIVATE_SPACE_VARNAME) {
+            $this->setSpecificLocationName(null);
+        }
 
         return $this;
     }

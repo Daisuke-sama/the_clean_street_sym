@@ -26,6 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleFormType extends AbstractType
 {
     const SPECIFIC_LOCATION_FIELD_NAME = 'specificLocationName';
+    const PRIVATE_SPACE_VARNAME = 'private_space';
 
     /**
      * @var UserRepository
@@ -59,7 +60,7 @@ class ArticleFormType extends AbstractType
                 'choices' => [
                     'The Urban System' => 'urban_system',
                     'Near a closet' => 'closet',
-                    'Private Space' => 'private_space'
+                    'Private Space' => self::PRIVATE_SPACE_VARNAME,
                 ],
             ]);
 
@@ -142,10 +143,10 @@ class ArticleFormType extends AbstractType
         $locationNameChoices = [
             'urban_system' => array_combine($cities, $cities),
             'closet' => array_combine($closet, $closet),
-            'private_space' => null,
+            self::PRIVATE_SPACE_VARNAME => null,
         ];
 
-        return $locationNameChoices[$location];
+        return $locationNameChoices[$location] ?? null;
     }
 
     private function setupSpecificLocationNameField(FormInterface $form, ?string $location)
