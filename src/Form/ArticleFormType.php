@@ -25,6 +25,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticleFormType extends AbstractType
 {
+    const SPECIFIC_LOCATION_FIELD_NAME = 'specificLocationName';
+
     /**
      * @var UserRepository
      */
@@ -64,7 +66,7 @@ class ArticleFormType extends AbstractType
         $location = $article ? $article->getLocation() : null;
         if ($location) {
             $builder
-                ->add('specificLocationName', ChoiceType::class, [
+                ->add(self::SPECIFIC_LOCATION_FIELD_NAME, ChoiceType::class, [
                     'placeholder' => 'Where exactly?',
                     'choices' => $this->getLocationNameChoices($location),
                     'required' => false,
@@ -103,7 +105,7 @@ class ArticleFormType extends AbstractType
                     $data->getLocation()        // so, we need to ask for the specific field against its data
                 );
             }
-            );
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -151,12 +153,12 @@ class ArticleFormType extends AbstractType
         $choices = $this->getLocationNameChoices($location);
 
         if (null === $choices) {
-            $form->remove('specificLocationName');
+            $form->remove(self::SPECIFIC_LOCATION_FIELD_NAME);
 
             return;
         }
 
-        $form->add('specificLocationName', ChoiceType::class, [
+        $form->add(self::SPECIFIC_LOCATION_FIELD_NAME, ChoiceType::class, [
             'placeholder' => 'Where exactly?',
             'choices' => $choices,
             'required' => false,

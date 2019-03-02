@@ -18,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ArticleAdminController extends AbstractController
 {
+    private const ARTICLE_FORM_VAR_IN_TWIG = 'articleForm';
+
     /**
      * @Route(path="/admin/article/new", name="article_admin_new")
      * @param EntityManagerInterface $em
@@ -76,7 +78,7 @@ class ArticleAdminController extends AbstractController
         }
 
         return $this->render('article_admin/edit.html.twig', [
-            'articleForm' => $form->createView(),
+            self::ARTICLE_FORM_VAR_IN_TWIG => $form->createView(),
         ]);
     }
 
@@ -89,6 +91,28 @@ class ArticleAdminController extends AbstractController
 
         return $this->render('article_admin/list.html.twig', [
             'articles' => $arts,
+        ]);
+    }
+
+    /**
+     * @Route(path="/admin/article/location-select", name="admin_article_location_select")
+     * @param Request $request
+     * @return Response
+     */
+    public function getSpecificLocationSelectGroup(Request $request)
+    {
+        $article = new Article();
+        $article->setLocation($request->query->get('location'));
+
+        $form = $this->createForm(ArticleFormType::class, $article);
+
+        // no field? Return an empty response
+        if (!$form->has(ArticleFormType::SPECIFIC_LOCATION_FIELD_NAME)) {
+            return new Response(null, 200);
+        }
+
+        return $this->render('article_admin/_specific_location_name.html.twig', [
+            self::ARTICLE_FORM_VAR_IN_TWIG => $form->createView(),
         ]);
     }
 }
