@@ -1,4 +1,4 @@
-{% extends 'content_base.html.twig' %}
+{% extends 'article_admin/article_base.html.twig' %}
 
 {% block content_body %}
 
@@ -8,17 +8,4 @@
         button_text: 'Save!'
     }) }}
 
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
-    <script src="{{ asset('js/algolia-autocomplete.js') }}"></script>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-
-    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}

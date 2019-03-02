@@ -11,15 +11,19 @@ namespace App\Form;
 
 use App\Form\DataTransformer\EmailToUserTransformer;
 use App\Repository\UserRepository;
-use function Clue\StreamFilter\fun;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 
 class UserSelectTextType extends AbstractType
 {
+    const CSS_CLASS_AUTOCOMPLETE = 'js-user-autocomplete';
+    const JS_DATA_ATTR = 'data-autocomplete-url';
+
     private $userRepository;
     /**
      * @var RouterInterface
@@ -47,6 +51,19 @@ class UserSelectTextType extends AbstractType
         );
     }
 
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $attr = $view->vars['attr'];
+
+        $class = isset($attr['class']) ? $attr['class'].' ' : '';
+        $class .= self::CSS_CLASS_AUTOCOMPLETE;
+
+        $attr['class'] = $class;
+        $attr[self::JS_DATA_ATTR] = $this->router->generate('admin_utility_users');
+
+        $view->vars['attr'] = $attr;
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -54,10 +71,6 @@ class UserSelectTextType extends AbstractType
             'finder_callback' => function (UserRepository $userRepository, string $email) {
                 return $userRepository->findOneBy(['email' => $email]);
             },
-            'attr' => [
-                'class' => 'js-user-autocomplete',
-                'data-autocomplete-url' => $this->router->generate('admin_utility_users'),
-            ],
         ]);
     }
 
