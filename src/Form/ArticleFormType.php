@@ -40,9 +40,7 @@ class ArticleFormType extends AbstractType
             ->add('publishedAt', null, [
                 'widget' => 'single_text',
             ])
-            ->add('author', UserSelectTextType::class, [
-                'invalid_message' => 'User doesn\'t exist.',
-            ]);
+            ->add('author', UserSelectTextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
